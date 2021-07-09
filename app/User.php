@@ -40,11 +40,17 @@ class User extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany(Post::class,'user_id');
+        return $this->hasMany(Post::class, 'user_id');
     }
 
     public function isAdmin()
     {
         return auth()->user()->id;
+    }
+
+    // untuk image email
+    public function gravatar($size = 150)
+    {
+        return "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->email ) ) ) . "?d=mp&s=" . $size;
     }
 }

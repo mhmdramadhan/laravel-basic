@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 // Route::get('/', 'HomeController');
-
+Route::get('search', 'SearchController@post');
 Route::get('posts', 'PostController@index');
 Route::prefix('posts')->middleware('auth')->group(function () {
     // withoutMiddleware fungsi untuk pengecualian

@@ -21,7 +21,9 @@ class PostController extends Controller
     {
         // return Post::get(['title', 'slug']);
         // $posts =  Post::get();
-        $posts =  Post::latest()->paginate(6);
+
+        // membuat eager loading using with(data disini berupa function di model)
+        $posts =  Post::with('author', 'category', 'tags')->latest()->paginate(6);
         return view('posts.index', ['posts' => $posts]);
     }
 
@@ -31,7 +33,9 @@ class PostController extends Controller
         // if (!$post) {
         //     abort(404);
         // }
-        return view('posts.show', compact('post'));
+        // $posts = Post::where('category_id', $post->category_id)->latest()->limit(6)->get();
+        $posts = Post::with('author', 'category', 'tags')->latest()->limit(6)->get();
+        return view('posts.show', compact('post', 'posts'));
     }
 
     public function create()
@@ -135,7 +139,7 @@ class PostController extends Controller
     {
         return request()->validate([
             'thumbnail' => 'mimes:jpeg,png,jpg,svg|max:2048',
-            'title' => 'required|min:3|unique:posts,slug',
+            'title' => 'required|min:3|unique:posts,title',
             'body' => 'required',
             'category' => 'required',
             'tags' => 'array|required',
@@ -151,7 +155,7 @@ class PostController extends Controller
             $post->tags()->detach();
             // menghapus semua data post
             $post->delete();
-            session()->flash("success", "The post was destroyed");
+            session()->flash("error", "The post was destroyed");
             return redirect('posts');
         }
     }
